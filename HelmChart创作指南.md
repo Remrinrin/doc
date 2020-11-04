@@ -31,13 +31,13 @@ my-hello-world
 └── values.yaml
 ```
 
-在根目录下的*Chart.yaml*文件内，声明了当前Chart的名称、版本等基本信息，这些信息会在该Chart被放入仓库后，供用户浏览检索。比如我们可以把Chart的Description改成"My first hello world helm chart"。
+在根目录下的***Chart.yaml***文件内，声明了当前Chart的名称、版本等基本信息，这些信息会在该Chart被放入仓库后，供用户浏览检索。比如我们可以把Chart的Description改成"My first hello world helm chart"。
 
 #### 走近Chart
 
-Helm Chart对于应用的打包，不仅仅是将Deployment和Service以及其它资源整合在一起。我们看到*deployment.yaml*和*service.yaml*文件被放在*templates/*文件夹下，相较于原生的Kubernetes配置，多了很多渲染所用的可注入字段。比如在*deployment.yaml*的`spec.replicas`中，使用的是`.Values.replicaCount`而不是Kubernetes本身的静态数值。这个用来控制应用在Kubernetes上应该有多少运行副本的字段，在不同的应用部署环境下可以有不同的数值，而这个数值便是由注入的`Values`提供。
+Helm Chart对于应用的打包，<u>不仅仅是将Deployment和Service以及其它资源整合在一起</u>。我们看到*deployment.yaml*和*service.yaml*文件被放在*templates/*文件夹下，相较于原生的Kubernetes配置，多了很多渲染所用的可注入字段。比如在*deployment.yaml*的`spec.replicas`中，使用的是`.Values.replicaCount`而不是Kubernetes本身的静态数值。这个用来控制应用在Kubernetes上应该有多少运行副本的字段，在不同的应用部署环境下可以有不同的数值，而这个数值便是由注入的`Values`提供。
 
-在根目录下我们看到有一个`values.yaml`文件，这个文件提供了应用在安装时的默认参数。在默认的`Values`中，我们看到`replicaCount: 1`说明该应用在默认部署的状态下只有一个副本。
+在根目录下我们看到有一个`values.yaml`文件，<u>这个文件提供了应用在安装时的默认参数</u>。在默认的`Values`中，我们看到`replicaCount: 1`说明该应用在默认部署的状态下只有一个副本。
 
 为了使用我们要部署应用的镜像，我们看到*deployment.yaml*里在`spec.template.spec.containers`里，`image`和`imagePullPolicy`都使用了`Values`中的值。其中`image`字段由`.Values.image.repository`和`.Chart.AppVersion`组成。看到这里，同学们应该就知道我们需要变更的字段了，一个是位于*values.yaml*内的`image.repository`，另一个是位于*Chart.yaml*里的`AppVersion`。我们将它们与我们需要部署应用的docker镜像匹配起来。这里我们把*values.yaml*里的`image.repository`设置成`somefive/hello-world`，把*Chart.yaml*里的`AppVersion`设置成`1.0.0`即可。
 
